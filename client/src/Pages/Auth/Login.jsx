@@ -1,12 +1,16 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import AuthLayout from '../../Components/Layout/AuthLayout'
 import { Link, useNavigate } from 'react-router'
 
-import  {validateEmail}  from "../../utilis/helper"
+import { validateEmail } from "../../utilis/helper"
 
 import Inputs from '../../Components/inputs/Inputs'
-
+import axiosInstance from '../../utilis/axiosInstanse'
+import { API_URL } from '../../utilis/apiPath'
+import { BASE_URL } from '../../utilis/apiPath'
+import { UserContext } from '../../context/userContext'
 const Login = () => {
+
 
 
   const [email, setEmail] = useState("")
@@ -15,8 +19,10 @@ const Login = () => {
 
   const [err, setErr] = useState("")
 
+  const { updateUser } = useContext(UserContext)
 
-  
+
+
 
   const navigate = useNavigate()
 
@@ -38,6 +44,52 @@ const Login = () => {
     }
 
     setErr("")
+
+
+    console.log(`${BASE_URL}${API_URL.AUTH.LOGIN}`);
+
+
+    try {
+
+      const response = await axiosInstance.post(
+        `${BASE_URL}${API_URL.AUTH.LOGIN}`, {
+        email,
+        password
+      })
+
+      const { token, user } = response.data
+
+      
+
+      if (token) {
+
+        localStorage.setItem("token", token)
+
+        updateUser(user)
+
+        navigate("/dashboard")
+
+
+      }
+
+
+
+    } catch (error) {
+
+      if (error.response.data.msg) {
+        setErr(error.response.data.msg)
+      }
+      else {
+
+        setErr("Something went wrong")
+
+      }
+
+
+
+    }
+
+
 
   }
 
@@ -67,7 +119,7 @@ const Login = () => {
 
             {
               err && <p className=' text-red-500 text-xs pb-2.5' >{err}</p>
-             }
+            }
 
 
 

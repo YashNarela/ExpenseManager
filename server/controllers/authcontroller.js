@@ -12,23 +12,26 @@ exports.registerUser = async (req, res) => {
   try {
     console.log(req.body);
 
-    const { fullName, email, password, profilepic } = req.body;
+    const { fullname, email, password, profileImageUrl } = req.body;
 
-    if (!fullName || !email || !password) {
-      return res.status(400).json({ msg: "All fields are required" });
-    }
+if (!fullname || !email || !password) {
+  return res.status(400).json({ msg: "All fields are required" });
+}
+
 
     const existingUser = await User.findOne({ email });
+
+    console.log(existingUser);
 
     if (existingUser) {
       return res.status(400).json({ msg: "Email Already exists" });
     }
 
     const user = await User.create({
-      fullName,
+      fullName:  fullname,
       email,
       password,
-      profilepic,
+      profilepic: profileImageUrl,
     });
 
     console.log(user);
@@ -51,14 +54,14 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ msg: "All fields are required" });
     }
 
-    const user = User.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user || !(await user.comparePassword(password))) {
-      return React.status(400).json({ msg: "Invalid credentials" });
+      return res.status(400).json({ msg: "Invalid credentials" });
     }
 
     res.status(200).json({
-      id: _id.user,
+      id: user._id,
       user,
       token: generateToken(user._id),
     });
@@ -69,5 +72,14 @@ exports.loginUser = async (req, res) => {
 
 exports.getUserInfo = async (req, res) => {
   try {
-  } catch (error) {}
+    const user = await User.findById(req.user.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json({ msg: "Unable To Signup", error: error.message });
+  }
 };

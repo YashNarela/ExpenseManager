@@ -1,13 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import AuthLayout from '../../Components/Layout/AuthLayout'
 import { Link, useNavigate } from 'react-router'
 
 import { validateEmail } from "../../utilis/helper"
 
+import axiosInstance from '../../utilis/axiosInstanse'
+import { API_URL } from '../../utilis/apiPath'
+import { BASE_URL } from '../../utilis/apiPath'
+import { UserContext } from '../../context/userContext'
 import ProfilePhotoSelector from '../../Components/inputs/ProfilePhotoSelector'
 import Inputs from '../../Components/inputs/Inputs'
+
+import uploadImage from '../../utilis/uploadImage'
+import axios from 'axios'
 const Signup = () => {
 
+  const { updateUser } = useContext(UserContext)
 
   const [profilepic, setProfilepic] = useState("")
 
@@ -27,12 +35,69 @@ const Signup = () => {
 
     e.preventDefault()
 
-    let profileImageUrl=""
+    let profileImageUrl = ""
 
-    if(!fullname){
+    if (!fullname) {
 
       setErr("please Enter Your  Name ")
-      return 
+      return
+    }
+
+    setErr("")
+
+    try {
+
+
+      if(profilepic){
+
+      const imgUploadRes=await uploadImage(profilepic)
+
+
+      profileImageUrl=imgUploadRes.imgUrl|| "";
+
+      }
+
+
+
+      const response = await axios.post(
+        `${BASE_URL}${API_URL.AUTH.REGISTER}`, {
+        fullname,
+        email,
+        password,
+        profileImageUrl
+      })
+
+      console.log(response.data);
+
+      
+
+
+      const { token, user } = response.data
+
+
+      if (token) {
+
+        localStorage.setItem("token", token)
+
+        updateUser(user)
+
+        navigate("/dashboard")
+
+
+      }
+
+    } catch (error) {
+
+      if (error.response.data.msg) {
+        setErr(error.response.data.msg)
+      }
+      else {
+
+        setErr("Something went wrong")
+
+      }
+
+
     }
 
 
@@ -58,7 +123,7 @@ const Signup = () => {
 
           <form onSubmit={handleSignUp}  >
 
-            <ProfilePhotoSelector image={profilepic} setImage={setProfilepic}   />
+            <ProfilePhotoSelector image={profilepic} setImage={setProfilepic} />
 
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -67,8 +132,8 @@ const Signup = () => {
 
               <Inputs type="text" value={email} label="Email Adress" placeholder='Yash123@gmail.com' onChange={({ target }) => { setEmail(target.value) }} />
 
-              <div  className='col-span-2' >
-              <Inputs type="password" value={password} label="Password " placeholder='Min 8 Characters' onChange={({ target }) => { setPassword(target.value) }} />
+              <div className='col-span-2' >
+                <Inputs type="password" value={password} label="Password " placeholder='Min 8 Characters' onChange={({ target }) => { setPassword(target.value) }} />
               </div>
 
 
@@ -80,7 +145,7 @@ const Signup = () => {
 
 
             <button type='submit' className='btn-primary'   >SignUp</button>
-    <p className='text-[13px]  text-slate-800 mt-3' >Already  have an account? {" "}  <Link className=' font-medium text-primary  underline' to="/login">Login</Link> </p>
+            <p className='text-[13px]  text-slate-800 mt-3' >Already  have an account? {" "}  <Link className=' font-medium text-primary  underline' to="/login">Login</Link> </p>
 
           </form>
 
