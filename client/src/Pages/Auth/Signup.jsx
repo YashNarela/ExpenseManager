@@ -48,12 +48,16 @@ const Signup = () => {
     try {
 
 
-      if(profilepic){
+      if (profilepic) {
 
-      const imgUploadRes=await uploadImage(profilepic)
+        const imgUploadRes = await uploadImage(profilepic)
 
 
-      profileImageUrl=imgUploadRes.imgUrl|| "";
+        console.log(imgUploadRes);
+
+
+
+        profileImageUrl = imgUploadRes.imgUrl || "";
 
       }
 
@@ -69,7 +73,7 @@ const Signup = () => {
 
       console.log(response.data);
 
-      
+
 
 
       const { token, user } = response.data

@@ -39,7 +39,7 @@ const SideMenu = ({ activeMenu }) => {
         <>
 
 
-            <div className='w-64 h-[calc(100vh-61px)] bg-white  border-r border-gray-200/50 p-5  top-[61px]  z-20 ' >
+            <div className='w-64  bg-white  border-r border-gray-200/50 p-5  top-[61px]  z-20 ' >
 
 
                 <div>
@@ -87,8 +87,8 @@ const SideMenu = ({ activeMenu }) => {
 
                     >
 
-                        <item.icon className='text-xl 
-                        ' />
+                        <item.icon className='text-xl' />
+                       
                        
                        {item.label}
                     </button>

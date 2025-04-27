@@ -12,7 +12,16 @@ exports.registerUser = async (req, res) => {
   try {
     console.log(req.body);
 
-    const { fullname, email, password, profileImageUrl } = req.body;
+   
+    
+    const { fullname, email, password } = req.body;
+
+    
+
+       const profileImageUrl = req.file 
+
+       console.log(profileImageUrl);
+       
 
 if (!fullname || !email || !password) {
   return res.status(400).json({ msg: "All fields are required" });
