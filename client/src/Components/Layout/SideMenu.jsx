@@ -3,6 +3,8 @@ import React, { useContext } from 'react'
 import { SideMenuData } from '../../utilis/data'
 import { UserContext } from '../../context/userContext'
 import { useNavigate } from 'react-router'
+
+import CharAvatar from '../Cards/CharAvatar'
 const SideMenu = ({ activeMenu }) => {
 
     const { user, clearUser } = useContext(UserContext)
@@ -42,23 +44,27 @@ const SideMenu = ({ activeMenu }) => {
             <div className='w-64  bg-white  border-r border-gray-200/50 p-5  top-[61px]  z-20 ' >
 
 
-                <div>
+                <div className='flex flex-col items-center justify-center  gap-3 mt-2'  >
 
                     {
-                        user?.profileImageUrl ? (
+                        !user?.profileImageUrl ? (
 
-                            <img src={user?.profileImageUrl || ""} alt="Profile Image" />
+                            <img className='w-20 h-20 bg-slate-400    ' src={user?.profileImageUrl || ""} alt="Profile Image" />
 
 
                         ) : (
-                            <></>
+                            <>
+
+                                <CharAvatar fullName={user?.fullName} width="w-20" height="h-20" style="text-xl" />
+
+                            </>
                         )
 
 
 
                     }
 
-                    <h5 className='' >
+                    <h5 className='text-gray-950  font-medium leading-6' >
 
                         {
                             user?.fullName || ""}
@@ -88,9 +94,9 @@ const SideMenu = ({ activeMenu }) => {
                     >
 
                         <item.icon className='text-xl' />
-                       
-                       
-                       {item.label}
+
+
+                        {item.label}
                     </button>
                 ))
             }

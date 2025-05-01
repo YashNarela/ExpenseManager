@@ -1,7 +1,10 @@
 import React from 'react'
 
 import DashboardLayout from '../../Components/Layout/DashboardLayout'
+import useUserAuth from '../../hooks/useUserAuth'
 const Home = () => {
+
+  useUserAuth()
   return (
     <>
 
@@ -12,7 +15,7 @@ const Home = () => {
         <div className='my-5 mx-auto ' >
 
 
-
+    Home
 
 
         </div>
